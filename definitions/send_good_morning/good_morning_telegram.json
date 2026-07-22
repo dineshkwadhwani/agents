@@ -1,0 +1,55 @@
+{
+  "name": "Good Morning Telegram Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "id": "g1m2o3r4-0001-4000-8000-000000000001",
+      "name": "Every Day 8AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-600, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/botPUT_YOUR_BOT_TOKEN_HERE/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ chat_id: 'PUT_YOUR_CHAT_ID_HERE', text: '🌅 Good Morning! Have an amazing day ahead! 😊\\n\\n' + new Date().toLocaleDateString(\"en-IN\", { weekday: \"long\", year: \"numeric\", month: \"long\", day: \"numeric\" }) }) }}",
+        "options": {}
+      },
+      "id": "g1m2o3r4-0002-4000-8000-000000000002",
+      "name": "Send Good Morning",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-380, 0]
+    }
+  ],
+  "connections": {
+    "Every Day 8AM": {
+      "main": [
+        [
+          {
+            "node": "Send Good Morning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
