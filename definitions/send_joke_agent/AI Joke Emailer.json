@@ -1,0 +1,128 @@
+{
+  "name": "AI Joke Emailer",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b66300a1-cabf-42e0-b54a-2da86c5582f9",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "AIzaSyCkEE5cnfiEQmgH5mcKRzyh3TfUQvFrnpk"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Tell me a short, funny joke. Just the joke, no intro or explanation.\"\n        }\n      ]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "c1974c6c-da0d-42c6-acd2-489680f83fdb",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst joke = data.candidates[0].content.parts[0].text;\n\nreturn [{\n  json: {\n    joke: joke\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "7a3e44cc-46a5-4d3c-b97f-11ced2eea6b2",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "sendTo": "dinesh.k.wadhwani@gmail.com",
+        "subject": "Your AI Joke of the Day!",
+        "message": "={{ $json.joke }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "b7208e63-fcf6-4f25-a7ad-3d0477fad609",
+      "name": "Send a message",
+      "webhookId": "b9351a7c-7389-4a47-af23-39ef3e10cbf5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "DF01aGGQoWcva0hc",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "cef3e0db-f7a2-450f-b8d3-829b94b02e46",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b532da54f3fc3f87fb555ef1d6da8d84787eb30a9e315f040dac7d4b9f60377a"
+  },
+  "nodeGroups": [],
+  "id": "fg7jrkvwsJ7q8QJ9",
+  "tags": []
+}
